@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  backend:
+    build: .
+    container_name: likelion-frontend-api-practice
+    restart: always
+    ports:
+      - '11111:11111'
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: likelion-frontend-api-practice-db
+    restart: always
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: likelion
+      MYSQL_DATABASE: likelion-frontend-api-practice
+      MYSQL_USER: likelion-frontend-api-practice
+      MYSQL_PASSWORD: likelion
+    ports:
+      - '3309:3306'
+    volumes:
+      - waynd_mysql_data:/var/lib/mysql
+
+volumes:
+  waynd_mysql_data:
